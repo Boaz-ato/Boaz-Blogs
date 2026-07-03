@@ -1,13 +1,9 @@
 ---
-title: "Error Correction"
-linkTitle: "Error Correction"
+title: "Quantum Error Correction"
+linkTitle: "Quantum Error Correction"
 cascade:
   type: docs
   reversePagination: false
 ---
 
-A journey through error correction — from the first parity bits to the quantum
-codes that may one day power fault-tolerant quantum computers.
-
-This series builds understanding progressively. Each chapter assumes familiarity
-with the previous one, taking you from first principles to current research.
+A series on quantum error correction. I'll explain why quantum error correction is essential for building a useful quantum computer, why QEC is hard, and the approaches used to overcome those challenges. From there, we'll move on to stabilizer codes and simulate them using STIM. The goal is to build understanding from the basics up to current research, so that by the end you have the knowledge needed to make meaningful contributions to the field or follow current research with confidence.
