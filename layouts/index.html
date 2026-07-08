@@ -1,179 +1,166 @@
 {{ define "main" }}
 <style>
-  /* ── Hero ─────────────────────────────────────────── */
-  .bb-hero {
-    text-align: center;
-    padding: 5rem 1.5rem 4rem;
-    background: radial-gradient(ellipse at 50% 0%, rgba(234,88,12,0.10) 0%, transparent 70%);
-  }
-
-  .bb-avatar {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    border: 3px solid rgba(234,88,12,0.45);
-    box-shadow:
-      0 0 0 7px rgba(234,88,12,0.08),
-      0 12px 40px rgba(234,88,12,0.18);
-    margin-bottom: 1.6rem;
-    display: inline-block;
-  }
-
-  .bb-hero-name {
-    font-size: 2.6rem;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    margin: 0 0 1rem;
-    background: linear-gradient(135deg, #ea580c 0%, #fb923c 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .bb-hero-bio {
-    font-size: 1.05rem;
-    line-height: 1.85;
-    max-width: 500px;
+  /* ── Page container ───────────────────────────────── */
+  .bb-page {
+    max-width: 680px;
     margin: 0 auto;
-    opacity: 0.72;
+    padding: 3.5rem 1.5rem 5rem;
+  }
+
+  /* ── Author bio ───────────────────────────────────── */
+  .bb-bio {
+    margin-bottom: 2.5rem;
+  }
+
+  .bb-bio h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .bb-bio p {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    margin: 0 0 0.9rem;
+    opacity: 0.7;
+  }
+
+  .bb-social {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .bb-social a {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    font-weight: 500;
+  }
+
+  .bb-social a:hover {
+    opacity: 1;
+    text-decoration: none;
+  }
+
+  .bb-social svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    fill: currentColor;
   }
 
   /* ── Divider ──────────────────────────────────────── */
   .bb-divider {
-    max-width: 840px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
     border: none;
-    border-top: 1px solid rgba(234,88,12,0.15);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    margin: 0 0 2rem;
   }
 
-  /* ── Blogs section ────────────────────────────────── */
-  .bb-blogs {
-    max-width: 840px;
-    margin: 0 auto;
-    padding: 2.5rem 1.5rem 5rem;
+  .dark .bb-divider {
+    border-color: rgba(255,255,255,0.08);
   }
 
-  .bb-section-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.4;
-    margin: 0 0 1.25rem;
-  }
-
-  /* ── Cards grid ───────────────────────────────────── */
-  .bb-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.25rem;
-  }
-
-  .bb-card {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none !important;
-    border-radius: 14px;
-    border: 1px solid rgba(234,88,12,0.12);
-    background: rgba(234,88,12,0.03);
-    overflow: hidden;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    color: inherit;
-  }
-
-  .dark .bb-card {
-    border-color: rgba(234,88,12,0.18);
-    background: rgba(234,88,12,0.05);
-  }
-
-  .bb-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(234,88,12,0.16);
-    border-color: rgba(234,88,12,0.35);
-    text-decoration: none !important;
-  }
-
-  .bb-card-stripe {
-    height: 3px;
-    background: linear-gradient(90deg, #ea580c 0%, #fb923c 50%, #fbbf24 100%);
-  }
-
-  .bb-card-body {
-    flex: 1;
-    padding: 1.4rem 1.4rem 1rem;
-  }
-
-  .bb-card-emoji {
-    font-size: 1.6rem;
-    margin-bottom: 0.8rem;
-    display: block;
-  }
-
-  .bb-card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem;
-    letter-spacing: -0.01em;
-    color: inherit;
-  }
-
-  .bb-card-desc {
-    font-size: 0.875rem;
-    line-height: 1.65;
-    opacity: 0.65;
+  /* ── Post list ────────────────────────────────────── */
+  .bb-post-list {
+    list-style: none;
     margin: 0;
+    padding: 0;
   }
 
-  .bb-card-footer {
-    padding: 0.65rem 1.4rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
+  .bb-post-item {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .dark .bb-post-item {
+    border-color: rgba(255,255,255,0.06);
+  }
+
+  .bb-post-item:last-child {
+    border-bottom: none;
+  }
+
+  .bb-post-meta {
     font-size: 0.78rem;
     opacity: 0.45;
+    margin: 0 0 0.4rem;
     font-weight: 500;
-    border-top: 1px solid rgba(234,88,12,0.08);
+    letter-spacing: 0.02em;
   }
 
-  .dark .bb-card-footer {
-    border-color: rgba(234,88,12,0.12);
+  .bb-post-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0 0 0.45rem;
+    letter-spacing: -0.01em;
+  }
+
+  .bb-post-title a {
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s;
+  }
+
+  .bb-post-title a:hover {
+    opacity: 0.65;
+    text-decoration: none;
+  }
+
+  .bb-post-desc {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    opacity: 0.62;
+    margin: 0;
   }
 </style>
 
-<!-- ── Hero ── -->
-<section class="bb-hero">
-  <img
-    class="bb-avatar"
-    src="/Boaz-Blogs/images/boaz.jpeg"
-    alt="Boaz"
-  />
-  <h1 class="bb-hero-name">Hi, I'm Boaz</h1>
-  <p class="bb-hero-bio">
-    Welcome to my Blog! Here, I write about topics I find intersting. From the basics all the way to current research, building intuition step by step. I hope you enjoy the
-    journey.
-  </p>
-</section>
+<div class="bb-page">
 
-<hr class="bb-divider" />
+  <!-- ── Author bio ── -->
+  <div class="bb-bio">
+    <h1>Welcome to Boaz's Blog</h1>
+    <p>I write about topics I find interesting — from the basics all the way to current research, building intuition step by step.</p>
+    <div class="bb-social">
 
-<!-- ── Blog listing ── -->
-<div class="bb-blogs">
-  <p class="bb-section-label">Blogs</p>
-  <div class="bb-grid">
+      <!-- GitHub -->
+      <a href="https://github.com/Boaz-ato" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+        </svg>
+        GitHub
+      </a>
 
-    <a href="/Boaz-Blogs/error-correction/" class="bb-card">
-      <div class="bb-card-stripe"></div>
-      <div class="bb-card-body">
-        <span class="bb-card-emoji">📖</span>
-        <p class="bb-card-title">Quantum Error Correction</p>
-        <p class="bb-card-desc">In this blog series, I will be explaining quantum error correction. My objective is to explain the concept from the ground up to current error correction codes such as the surface code and color codes. I will also explain how to use STIM to simulate different codes. Anyone with knowledge of quantum computing and linear algebra should be able to follow along. </p>
-      </div>
-      <div class="bb-card-footer">
-        <span>1 chapter</span>
-      </div>
-    </a>
+      <!-- LinkedIn -->
+      <a href="https://www.linkedin.com/in/boaz-micah" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+        </svg>
+        LinkedIn
+      </a>
 
+    </div>
   </div>
+
+  <hr class="bb-divider" />
+
+  <!-- ── Post list ── -->
+  <ul class="bb-post-list">
+
+    <li class="bb-post-item">
+      <p class="bb-post-meta">Series &middot; 7 chapters</p>
+      <h2 class="bb-post-title">
+        <a href="/Boaz-Blogs/error-correction/">Quantum Error Correction</a>
+      </h2>
+      <p class="bb-post-desc">From the basics of why quantum error correction is necessary, through the digitisation of quantum errors and redundancy via entanglement, to stabiliser codes and simulation with STIM. Anyone with a basic understanding of quantum computing and linear algebra can follow along.</p>
+    </li>
+
+  </ul>
+
 </div>
 {{ end }}
