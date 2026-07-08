@@ -1,6 +1,7 @@
 ---
 title: "Classical Error Correction"
 weight: 2
+math: true
 ---
 
 In classical information processing, data is represented as a sequence of bits taking values `0` or `1`. The basic idea behind error correction is to increase the number of bits used to encode a given amount of information.
@@ -20,13 +21,11 @@ However, if more than one bit flip occurs, the majority vote fails. For example,
 
 ## Code Distance
 
-The **distance** of an error correction code is the minimum number of bit flips needed to transform one valid codeword into another. We can relate the distance `d` to the number of errors `t` the code can correct:
+The **distance** of an error correction code is the minimum number of bit flips needed to transform one valid codeword into another. We can relate the distance $d$ to the number of errors $t$ the code can correct:
 
-```
-d = 2t + 1
-```
+$$d = 2t + 1$$
 
-For the three-bit repetition code, `d = 3`, so it can correct `t = 1` error.
+For the three-bit repetition code, $d = 3$, so it can correct $t = 1$ error.
 
 ## All Possible Outcomes
 
@@ -47,15 +46,13 @@ The majority vote succeeds whenever at most one bit flips, and fails when two or
 
 ## Logical Error Rate
 
-The probability that two or more errors occur out of three independent bits, each with error rate `p`, is:
+The probability that two or more errors occur out of three independent bits, each with error rate $p$, is:
 
-```
-P(fail) = 3p² − 2p³
-```
+$$P_{\text{fail}} = 3p^2 - 2p^3$$
 
-Compare this to the unprotected error rate of `p`. The repetition code is an improvement whenever `P(fail) < p`, which holds for any `p < 0.5`.
+Compare this to the unprotected error rate of $p$. The repetition code is an improvement whenever $P_{\text{fail}} < p$, which holds for any $p < 0.5$.
 
-The plot below shows the logical error rate of the three-bit repetition code versus the physical error rate `p`:
+The plot below shows the logical error rate of the three-bit repetition code versus the physical error rate $p$:
 
 ![Logical error rate of the three-bit repetition code](/images/classical_error_rate.png)
 
@@ -63,8 +60,8 @@ The plot below shows the logical error rate of the three-bit repetition code ver
 
 Error correction codes are described using the **[n, k, d]** notation, where:
 
-- `n` — total number of bits per codeword
-- `k` — number of logical (encoded) bits
-- `d` — code distance
+- $n$ — total number of bits per codeword
+- $k$ — number of logical (encoded) bits
+- $d$ — code distance
 
 Under this notation, the three-bit repetition code is labelled **[3, 1, 3]**: it uses 3 physical bits to encode 1 logical bit with distance 3.
