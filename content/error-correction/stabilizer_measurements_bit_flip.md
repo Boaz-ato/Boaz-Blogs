@@ -130,6 +130,35 @@ The ancilla is measured deterministically as $1$, signalling an error. $\checkma
 
 Considering all error patterns: if the logical state is in the codespace (i.e. $E \in \{I, X_1 X_2\}$) the ancilla is measured as $0$. If the logical state is in the error subspace (i.e. $E \in \{X_1, X_2\}$) the ancilla is measured as $1$. The outcome of the ancilla measurement is the **syndrome**.
 
+<details class="bb-derive">
+<summary>Example: X₂ error deterministically gives ancilla outcome 1</summary>
+<div class="bb-derive-body">
+
+Suppose the second qubit suffers a bit-flip error, so $E = X_2$. The corrupted logical state is:
+
+$$X_2|\psi\rangle_L = X_2(\alpha|00\rangle + \beta|11\rangle) = \alpha|01\rangle + \beta|10\rangle$$
+
+**Step 1 — Check the eigenvalue of $Z_1 Z_2$ on the corrupted state:**
+
+$$Z_1 Z_2(\alpha|01\rangle + \beta|10\rangle) = \alpha\underbrace{Z_1|0\rangle}_{+|0\rangle}\underbrace{Z_2|1\rangle}_{-|1\rangle} + \beta\underbrace{Z_1|1\rangle}_{-|1\rangle}\underbrace{Z_2|0\rangle}_{+|0\rangle}$$
+
+$$= -\alpha|01\rangle - \beta|10\rangle = -X_2|\psi\rangle_L$$
+
+So $X_2|\psi\rangle_L$ is a $-1$ eigenstate of $Z_1 Z_2$.
+
+**Step 2 — The first term of the syndrome extraction vanishes:**
+
+$$\frac{1}{2}(\mathbb{1} + Z_1 Z_2)\,X_2|\psi\rangle_L = \frac{1}{2}(X_2|\psi\rangle_L + (-X_2|\psi\rangle_L)) = 0$$
+
+**Step 3 — Only the second term survives:**
+
+$$\frac{1}{2}(\mathbb{1} - Z_1 Z_2)\,X_2|\psi\rangle_L|1\rangle_A = \frac{1}{2} \cdot 2\,X_2|\psi\rangle_L|1\rangle_A = X_2|\psi\rangle_L|1\rangle_A$$
+
+The post-measurement state is $X_2|\psi\rangle_L|1\rangle_A$. The ancilla is deterministically measured as $1$, confirming that an error has occurred — without revealing $\alpha$ or $\beta$. $\checkmark$
+
+</div>
+</details>
+
 However, the two-qubit code only tells us whether an error occurred — it cannot tell us *which* qubit was affected. It is therefore a detection code. To locate the error, we need multiple stabiliser measurements.
 
 ## The Three-Qubit Code
@@ -142,7 +171,7 @@ which lives in an eight-dimensional Hilbert space $\mathcal{H}_8$ with codespace
 
 To distinguish between the four possible single-qubit error subspaces, we perform two stabiliser measurements, $Z_1 Z_2$ and $Z_2 Z_3$, using the circuit shown below.
 
-![Encoding and syndrome measurement for the three-qubit logical state](/images/three_qubits_syndrome.png)
+![Encoding and syndrome measurement for the three-qubit logical state](/images/bit_flip_full.png)
 
 Both $Z_1 Z_2$ and $Z_2 Z_3$ commute with the logical state (they each return $+1$ on any codeword). Applying both extraction circuits in sequence gives four branches, one for each pair of ancilla outcomes:
 
@@ -205,6 +234,59 @@ The syndrome is $S = 11$. Only the fourth branch survives:
 $$\frac{1}{4}(\mathbb{1} - Z_1Z_2)(\mathbb{1} - Z_2Z_3)\,X_2|\psi\rangle_L|1\rangle_{A_1}|1\rangle_{A_2} = X_2|\psi\rangle_L|1\rangle_{A_1}|1\rangle_{A_2}$$
 
 The ancillas are both measured as $1$, uniquely identifying an $X_2$ error.
+
+<details class="bb-derive">
+<summary>Step-by-step: why only the fourth term survives for E = X₂</summary>
+<div class="bb-derive-body">
+
+We have established that $X_2|\psi\rangle_L$ is a $-1$ eigenstate of both $Z_1Z_2$ and $Z_2Z_3$:
+
+$$Z_1Z_2\,X_2|\psi\rangle_L = -X_2|\psi\rangle_L, \qquad Z_2Z_3\,X_2|\psi\rangle_L = -X_2|\psi\rangle_L$$
+
+This means the projectors act as follows:
+
+$$(\mathbb{1} + Z_1Z_2)\,X_2|\psi\rangle_L = X_2|\psi\rangle_L + (-X_2|\psi\rangle_L) = 0$$
+
+$$(\mathbb{1} - Z_1Z_2)\,X_2|\psi\rangle_L = X_2|\psi\rangle_L - (-X_2|\psi\rangle_L) = 2X_2|\psi\rangle_L$$
+
+and identically for $Z_2Z_3$. Now evaluate each of the four branches:
+
+**Term 1** — syndrome $(0,0)$:
+
+$$\frac{1}{4}(\mathbb{1}+Z_1Z_2)(\mathbb{1}+Z_2Z_3)\,X_2|\psi\rangle_L = \frac{1}{4}(\mathbb{1}+Z_1Z_2)\cdot 0 = 0 \quad \times$$
+
+**Term 2** — syndrome $(0,1)$:
+
+$$\frac{1}{4}(\mathbb{1}+Z_1Z_2)(\mathbb{1}-Z_2Z_3)\,X_2|\psi\rangle_L = \frac{1}{4}(\mathbb{1}+Z_1Z_2)\cdot 2X_2|\psi\rangle_L = \frac{1}{2}\cdot 0 = 0 \quad \times$$
+
+**Term 3** — syndrome $(1,0)$:
+
+$$\frac{1}{4}(\mathbb{1}-Z_1Z_2)(\mathbb{1}+Z_2Z_3)\,X_2|\psi\rangle_L = \frac{1}{4}(\mathbb{1}-Z_1Z_2)\cdot 0 = 0 \quad \times$$
+
+**Term 4** — syndrome $(1,1)$:
+
+$$\frac{1}{4}(\mathbb{1}-Z_1Z_2)(\mathbb{1}-Z_2Z_3)\,X_2|\psi\rangle_L$$
+
+First apply $(\mathbb{1}-Z_2Z_3)$:
+
+$$(\mathbb{1}-Z_2Z_3)\,X_2|\psi\rangle_L = 2X_2|\psi\rangle_L$$
+
+Then apply $(\mathbb{1}-Z_1Z_2)$ to the result:
+
+$$(\mathbb{1}-Z_1Z_2)\cdot 2X_2|\psi\rangle_L = 2\cdot 2X_2|\psi\rangle_L = 4X_2|\psi\rangle_L$$
+
+Multiplying by $\frac{1}{4}$:
+
+$$\frac{1}{4}\cdot 4X_2|\psi\rangle_L = X_2|\psi\rangle_L \quad \checkmark$$
+
+Only term 4 is non-zero. The full post-extraction state is:
+
+$$X_2|\psi\rangle_L|1\rangle_{A_1}|1\rangle_{A_2}$$
+
+Both ancillas measure $1$, giving syndrome $S = 11$, which uniquely points to an $X_2$ error. $\checkmark$
+
+</div>
+</details>
 
 ## Syndrome Table
 
