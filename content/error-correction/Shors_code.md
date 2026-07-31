@@ -28,11 +28,11 @@ Here we explore Shor's quantum error correction code, which can detect and corre
 
 ## The Encoding
 
-We first encode the logical qubit using the phase-flip code:
+We first encode the logical qubit using the encoding circuit for phase-flips:
 
 $$|0\rangle \to |{+}{+}{+}\rangle, \qquad |1\rangle \to |{-}{-}{-}\rangle$$
 
-Next, we encode each of these three qubits using the three-qubit bit-flip code:
+Next, we encode each of these three qubits using the three-qubit bit-flip encoding circuit:
 
 $$|{+}\rangle \to \frac{|000\rangle + |111\rangle}{\sqrt{2}}, \qquad |{-}\rangle \to \frac{|000\rangle - |111\rangle}{\sqrt{2}}$$
 
@@ -44,7 +44,7 @@ $$|1_L\rangle \equiv \frac{(|000\rangle - |111\rangle)(|000\rangle - |111\rangle
 
 ![Encoding circuit for Shor's code](/images/shor_encoding.png)
 
-The nine qubits are naturally grouped into three **blocks** of three qubits each: Block 1 ($q_1q_2q_3$), Block 2 ($q_4q_5q_6$), and Block 3 ($q_7q_8q_9$).
+The nine qubits are naturally grouped into three **blocks** of three qubits each: Block 0 ($q_1q_2q_3$), Block 1 ($q_4q_5q_6$), and Block 2 ($q_7q_8q_9$).
 
 ## The Stabilisers
 
@@ -60,7 +60,7 @@ The first six generators are Z-type stabilisers that detect bit-flip errors with
 
 **Z-type stabilisers on $|0_L\rangle$**
 
-Within each block, $|0_L\rangle$ contains only $|000\rangle$ and $|111\rangle$ — states where all three qubits are equal. Acting $Z_1Z_2$ on any term of the first block:
+Within each block, $|0_L\rangle$ contains only $|000\rangle$ and $|111\rangle$. Acting $Z_1Z_2$ on any term of the first block:
 
 $$Z_1Z_2 |000\rangle = (+1)(+1)|000\rangle = +|000\rangle, \qquad Z_1Z_2|111\rangle = (-1)(-1)|111\rangle = +|111\rangle$$
 
@@ -81,7 +81,7 @@ The same reasoning applies to $X_4X_5X_6X_7X_8X_9$. All eight stabilisers fix bo
 </div>
 </details>
 
-Any single-qubit error moves the logical state out of the codespace and into an error subspace. The syndrome — the joint measurement outcome of the eight stabilisers — uniquely identifies the affected qubit.
+Any single-qubit error moves the logical state out of the codespace and into an error subspace. The syndrome (the joint measurement outcome of the eight stabilisers) uniquely identifies the affected qubit.
 
 ## Syndrome Extraction
 
@@ -91,15 +91,11 @@ The syndrome extraction circuit measures all eight stabilisers using ancilla qub
 
 **Detecting a bit-flip error**
 
-Suppose a bit-flip occurs on qubit $q_1$. We measure $Z_1Z_2$ and find the two qubits differ — outcome $-1$. We then measure $Z_2Z_3$ and find $q_2$ and $q_3$ agree — outcome $+1$. Since only $Z_1Z_2$ triggers, the error must be on $q_1$. We recover by applying $X_1$. The same logic applies to bit-flip errors on any of the nine qubits.
+Suppose a bit-flip occurs on qubit $q_1$. We measure $Z_1Z_2$ and find the two qubits differ. The measurement outcome is $1$. We then measure $Z_2Z_3$ and find $q_2$ and $q_3$ agree with a measurement of $0$. Since only $Z_1Z_2$ triggers, the error must be on $q_1$. We recover by applying $X_1$. The same logic applies to bit-flip errors on any of the nine qubits.
 
 **Detecting a phase-flip error**
 
-Suppose a phase flip occurs on $q_1$. This flips the sign of the entire first block:
-
-$$(|000\rangle + |111\rangle) \xrightarrow{Z_1} (|000\rangle - |111\rangle)$$
-
-The stabiliser $X_1X_2X_3X_4X_5X_6$ compares the signs of blocks 1 and 2. After the error, the signs differ, yielding outcome $-1$. The stabiliser $X_4X_5X_6X_7X_8X_9$ compares blocks 2 and 3, which still agree — outcome $+1$. This uniquely identifies a phase error in block 1. We recover by applying $Z$ to any qubit in block 1. The same argument holds for phase errors on any of the nine qubits.
+Suppose a phase flip occurs on $q_1$. The stabiliser $X_1X_2X_3X_4X_5X_6$ compares the signs of blocks 1 and 2. After the error, the signs differ, yielding outcome $1$. The stabiliser $X_4X_5X_6X_7X_8X_9$ compares blocks 2 and 3, which still agree and gives a measurement of $0$. This uniquely identifies a phase error in block 1. We recover by applying $Z$ to any qubit in block 1. The same argument holds for phase errors on any of the nine qubits.
 
 ## Correcting Combined Errors
 
@@ -112,14 +108,14 @@ A combined $XZ$ error is equivalent to $ZX$ up to a global phase of $-1$. Since 
 ## Code Distance and Degeneracy
 
 <details class="bb-derive">
-<summary>Why Shor's code has distance $d = 3$</summary>
+<summary>Why Shor's code has distance 3</summary>
 <div class="derive-body">
 
-The distance of a code is the minimum weight of an operator that acts non-trivially on the logical qubit (i.e., maps $|0_L\rangle \leftrightarrow |1_L\rangle$ or introduces a relative phase) without being detected by any stabiliser.
+The distance of a code is the minimum number of errors to change one codeword into another.
 
-**Logical X operator.** The operator $\bar{X} = X_1X_4X_7$ (one X from each block) maps $|0_L\rangle \leftrightarrow |1_L\rangle$. It commutes with all eight stabilisers, so it goes undetected. Its weight is 3.
+**Logical X operator.** The operator $\bar{X} = X_1X_4X_7$ (one X from each block) maps $|0_L\rangle \leftrightarrow |1_L\rangle$. It commutes with all eight stabilisers, so it goes undetected. 
 
-**Logical Z operator.** The operator $\bar{Z} = Z_1Z_2Z_3$ (all three Z's in block 1) introduces a relative phase between $|0_L\rangle$ and $|1_L\rangle$. It commutes with all eight stabilisers (since the X-type stabilisers act on pairs of blocks — they anti-commute with $Z$ in each block, but the number of anti-commutations per stabiliser is even). Its weight is 3.
+**Logical Z operator.** The operator $\bar{Z} = Z_1Z_2Z_3$ (all three Z's in block 1) introduces a relative phase between $|0_L\rangle$ and $|1_L\rangle$. It commutes with all eight stabilisers and again goes undetected. 
 
 No logical operator of weight 1 or 2 exists that commutes with all stabilisers and acts non-trivially. Therefore $d = 3$, meaning Shor's code can correct any single-qubit error.
 
@@ -144,8 +140,8 @@ The table below lists the syndromes for all single-qubit errors. The eight syndr
 
 Each X-error produces a unique syndrome, allowing the decoder to pinpoint the affected qubit exactly. Z-errors within the same block share a syndrome — for example, $Z_1$, $Z_2$, and $Z_3$ all map to `00000010`. This is a property known as **degeneracy**.
 
-Crucially, this degeneracy does not reduce the code distance. Consider $Z_1$ and $Z_2$, which both map to syndrome `00000010`. The decoder cannot distinguish them and outputs a fixed recovery operation, say $R = Z_1$. If the true error was $E = Z_1$, then $RE = Z_1Z_1 = \mathbb{1}$ — perfect recovery. If the true error was $E = Z_2$, then $RE = Z_1Z_2$, which is an element of the stabiliser group and therefore acts trivially on the codespace:
+Crucially, this degeneracy does not reduce the code distance. Consider $Z_1$ and $Z_2$, which both map to syndrome `00000010`. The decoder cannot distinguish them and outputs a fixed recovery operation, say $R = Z_1$. If the true error was $E = Z_1$, then $RE = Z_1Z_1$ gives perfect recovery. If the true error was $E = Z_2$, then $RE = Z_1Z_2$, which is an element of the stabiliser group and therefore acts trivially on the codespace:
 
 $$Z_1Z_2\,|\psi\rangle_L = |\psi\rangle_L$$
 
-The same argument applies to all degenerate error pairs. As a result, Shor's code corrects all single-qubit errors despite the syndrome degeneracy, confirming that $d = 3$.
+The same argument applies to all degenerate error pairs. As a result, Shor's code corrects all single-qubit errors despite the syndrome degeneracy.
