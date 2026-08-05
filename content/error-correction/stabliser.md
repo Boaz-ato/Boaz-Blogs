@@ -1,5 +1,5 @@
 ---
-title: "Stabiliser Formulalism"
+title: "Stabiliser Formalism"
 weight: 9
 math: true
 ---
