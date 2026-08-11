@@ -10,7 +10,7 @@ So far, we have looked at the 3-qubit bit-flip code, 3-qubit phase code, and Sho
 
 We define the Pauli group $P_n$ on $n$ qubits as the set of all tensor products of the Pauli matrices $X$, $Y$, $Z$, and $I$, together with an overall phase of $\pm 1$ or $\pm i$. Any pair of elements in the Pauli group either commutes ($MN = NM$) or anticommutes ($MN = -NM$).
 
-For instance, in the one-qubit case, the Pauli group consists of the elements $\{I, X, Y, Z\}$ (up to phase). The identity commutes with every element, every element commutes with itself, and distinct non-identity elements anticommute. Elements of the Pauli group satisfy:
+For instance, in the one-qubit case, the Pauli group consists of the elements $\{\pm I, \pm iI, \pm X, \pm iX, \pm Y, \pm iY, \pm Z, \pm iZ\}$. The identity commutes with every element, every element commutes with itself, and distinct non-identity elements anticommute. Elements of the Pauli group satisfy:
 
 $$M^2 = \pm I.$$
 
