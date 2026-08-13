@@ -1,4 +1,4 @@
 ---
 title: "Introduction to STIM"
-weight: 11
+weight: 15
 ---

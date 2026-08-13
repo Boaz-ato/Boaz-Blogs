@@ -7,10 +7,39 @@ math: true
 So far, we have looked at the 3-qubit bit-flip code, 3-qubit phase code, and Shor's code. In all of these codes, we measured the eigenvalue of some Pauli operators and used the syndrome to determine the type of error that occurred. Here, we will formalise this concept using the stabiliser formalism.
 
 ## The Pauli Group
-
+Below are the Pauli matrices for single qubits:
+$$
+I =
+\begin{pmatrix}
+1 & 0 \\
+0 & 1
+\end{pmatrix},
+\qquad
+X =
+\begin{pmatrix}
+0 & 1 \\
+1 & 0
+\end{pmatrix},
+\qquad
+Y =
+\begin{pmatrix}
+0 & -i \\
+i & 0
+\end{pmatrix},
+\qquad
+Z =
+\begin{pmatrix}
+1 & 0 \\
+0 & -1
+\end{pmatrix}
+$$
 We define the Pauli group $P_n$ on $n$ qubits as the set of all tensor products of the Pauli matrices $X$, $Y$, $Z$, and $I$, together with an overall phase of $\pm 1$ or $\pm i$. Any pair of elements in the Pauli group either commutes ($MN = NM$) or anticommutes ($MN = -NM$).
 
-For instance, in the one-qubit case, the Pauli group consists of the elements $\{\pm I, \pm iI, \pm X, \pm iX, \pm Y, \pm iY, \pm Z, \pm iZ\}$. The identity commutes with every element, every element commutes with itself, and distinct non-identity elements anticommute. Elements of the Pauli group satisfy:
+For instance, in the one-qubit case, the Pauli group consists of the elements $\{\pm I, \pm iI, \pm X, \pm iX, \pm Y, \pm iY, \pm Z, \pm iZ\}$. For this group, the identity commutes with every element and every element commutes with itself. It has the following anti-commutation relations:
+
+$$XY = -YX  \qquad       XZ = -ZX  \qquad      YZ = -ZY$$ 
+
+Elements of the Pauli group satisfy:
 
 $$M^2 = \pm I.$$
 

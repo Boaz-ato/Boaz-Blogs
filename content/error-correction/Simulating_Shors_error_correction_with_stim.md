@@ -1,4 +1,4 @@
 ---
 title: "Simulating Shor's Error Correction with Stim"
-weight: 12
+weight: 16
 ---
