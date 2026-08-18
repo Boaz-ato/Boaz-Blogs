@@ -147,3 +147,51 @@ $$\frac{1}{2}(\mathbb{1} + X_1X_2X_3X_4X_5X_6)|000000000\rangle|0\rangle_A + \fr
 $$= \frac{1}{2}(|000000000\rangle + |111111000\rangle)|0\rangle_A + \frac{1}{2}(|000000000\rangle - |111111000\rangle)|1\rangle_A$$
 
 When the ancilla is measured, the state collapses to either the $(+1)$ or $(-1)$ projection with equal probability. If the '1' syndrome is measured, a correction (such as applying $X_1$) must be applied to transform the state back onto the $(+1)$ eigenspace of the stabilizer. Repeating this procedure for the remaining X-type stabilizer will lead to the preparation of the $|0\rangle_L$ codeword for Shor's code.
+
+
+## Code Space Dimension
+
+Given a stabiliser code defined by a list of n-qubit stabiliser generators $P_1, \ldots, P_r$, what is the dimension of the code space that it defines?
+
+The answer is that the dimension of the codespace must be $2^{n-r}$, so $n-r$ qubits can be encoded using this code.
+
+For example, the 3-bit repetition code for detecting bit-flip errors has $n = 3$ and $2$ stabiliser generators, and as such it only encodes a single qubit.
+
+<details class="bb-derive">
+<summary>Proof of code space dimension</summary>
+<div class="bb-derive-body">
+
+**Step 1:** Every stabilizer element is a product of a subset of generators. Because the generators commute and each Pauli is its own inverse, any element of the stabilizer can be written as $P_1^{a_1} \cdots P_r^{a_r}$ where each exponent $a_k$ is either 0 or 1. Each element corresponds to exactly one such subset, so there are exactly $2^r$ elements in the stabilizer.
+
+**Step 2:** For each generator $P_k$, define a projection onto its +1 eigenspace:
+
+$$\Pi_k = \frac{I^{\otimes n} + P_k}{2}$$
+
+This operator projects onto the +1 eigenvectors of $P_k$.
+
+**Step 3:** The product of these projections gives the projection onto the code space. Since the generators commute, so do the projections, and multiplying them gives the projection onto the intersection of all +1 eigenspaces:
+
+$$\Pi_1 \cdots \Pi_r = \text{projection onto the code space } C$$
+
+**Step 4:** Expanding the product $\left(\frac{I + P_1}{2}\right) \cdots \left(\frac{I + P_r}{2}\right)$ gives:
+
+$$\Pi_1 \cdots \Pi_r = \frac{1}{2^r} \sum_{a_1, \ldots, a_r \in \{0,1\}} P_1^{a_1} \cdots P_r^{a_r}$$
+
+Every term in that sum is one of the stabilizer elements from Step 1. The projection onto the code space is the average of all elements of the stabilizer.
+
+**Step 5:** The dimension of any subspace equals the trace of the projection onto it:
+
+$$\dim(C) = \text{Tr}(\Pi_1 \cdots \Pi_r) = \frac{1}{2^r} \sum_{a_1, \ldots, a_r} \text{Tr}(P_1^{a_1} \cdots P_r^{a_r})$$
+
+There are two cases:
+- The all-zeros term ($a_1 = \cdots = a_r = 0$) is $I^{\otimes n}$, whose trace is $2^n$.
+- Every other term is a non-identity Pauli operation. The product can't equal $+I^{\otimes n}$ (that would make the generators non-minimal) and can't equal $-I^{\otimes n}$ (the stabilizer condition forbids it). Every non-identity Pauli has trace zero, so all these terms vanish.
+
+Only the first term survives:
+
+$$\dim(C) = \frac{1}{2^r} \cdot 2^n = 2^{n-r}$$
+
+**Remark:** This proof justifies the requirement that $-I^{\otimes n}$ is not in the stabilizer. This condition guarantees the code space contains a state, since the dimension $2^{n-r}$ is never zero. If $-I^{\otimes n}$ were in the stabilizer, no nonzero vector could be fixed by it, and the code space would be empty.
+
+</div>
+</details>
