@@ -220,6 +220,20 @@ To correct $t$ errors, the code must have distance $d \geq 2t + 1$.
 Two errors $E$ and $F$ produce the same error syndrome if and only if $E^\dagger F \in N(S)$. If $E^\dagger F \notin N(S)$, the syndrome distinguishes them. If $E^\dagger F \in S$, the errors act identically on all codewords and there is no need to distinguish them.
 
 
+## Error Correction
+
+Detecting an error is not the same as correcting it. The syndrome tells us which subspace the state was pushed into, but not which Pauli operator caused it.
+
+Counting makes the difficulty precise. There are $4^n$ Pauli operators and $2^{n-k}$ possible syndromes, so each syndrome is produced by $4^n / 2^{n-k}$ different Paulis — any of which could be responsible.
+
+Not all of these are genuinely distinct. Recall that if $E^\dagger F \in S$ then $E$ and $F$ act identically on every codeword. A correction $C$ therefore repairs an error $E$ precisely when $C^\dagger E \in S$, and since $|S| = 2^{n-k}$, each $C$ corrects $2^{n-k}$ equivalent errors at once. This leaves
+
+$$
+\frac{4^n / 2^{n-k}}{2^{n-k}} = 4^k
+$$
+
+inequivalent classes of error per syndrome — one for each logical Pauli. Unless $k = 0$, we cannot correct them all. We must commit to a single correction $C$ for each syndrome and hope the true error lies in its class.
+
 ## Summary
 
 The stabilisers $\{G_i\}$ of an $[\![n, k, d]\!]$ code must satisfy the following properties:
