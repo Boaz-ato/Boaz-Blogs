@@ -1,6 +1,7 @@
 ---
 title: "Data Structures and Algorithms"
 linkTitle: "Data Structures and Algorithms"
+draft: true
 cascade:
   type: docs
   reversePagination: false
