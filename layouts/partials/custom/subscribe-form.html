@@ -1,0 +1,230 @@
+<style>
+/* ── Subscribe Section ───────────────────────────────────────────────────── */
+.bb-subscribe {
+  padding: 3rem 1.5rem;
+  border-top: 1px solid var(--bb-border);
+}
+
+.bb-subscribe-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bb-subscribe h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  color: var(--bb-text);
+}
+
+.bb-subscribe > .bb-subscribe-inner > p {
+  color: var(--bb-text-muted);
+  margin: 0 0 1.5rem;
+  font-size: 0.975rem;
+  line-height: 1.6;
+}
+
+.bb-subscribe-form {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 480px;
+  margin: 0 auto 0.75rem;
+}
+
+.bb-subscribe-form input[type="email"] {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--bb-border);
+  border-radius: 8px;
+  background: var(--bb-card-bg);
+  color: var(--bb-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.bb-subscribe-form input[type="email"]:focus {
+  border-color: var(--bb-primary);
+}
+
+.bb-subscribe-form input[type="email"]::placeholder {
+  color: var(--bb-text-muted);
+}
+
+.bb-subscribe-form button {
+  padding: 0.65rem 1.25rem;
+  background: var(--bb-gradient);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.bb-subscribe-form button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.bb-subscribe-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.bb-subscribe-note {
+  font-size: 0.8rem;
+  color: var(--bb-text-muted);
+  margin: 0;
+}
+
+/* Thank-you state */
+.bb-subscribe-thanks {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: bbFadeIn 0.4s ease;
+}
+
+.bb-subscribe-thanks svg {
+  width: 48px;
+  height: 48px;
+  color: var(--bb-primary);
+}
+
+.bb-subscribe-thanks p {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--bb-text);
+  margin: 0;
+}
+
+.bb-subscribe-thanks small {
+  color: var(--bb-text-muted);
+  font-size: 0.875rem;
+}
+
+@keyframes bbFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .bb-subscribe-form {
+    flex-direction: column;
+  }
+  .bb-subscribe-form button {
+    width: 100%;
+  }
+}
+</style>
+
+<section class="bb-subscribe">
+  <div class="bb-subscribe-inner">
+    <h2>Stay in the Loop</h2>
+    <p>Get notified when I publish new articles or series. No spam — just content.</p>
+
+    <!-- Form (hidden after successful subscribe) -->
+    <div id="bb-subscribe-widget">
+      <form
+        id="bb-subscribe-form"
+        class="bb-subscribe-form"
+        action="https://github.us3.list-manage.com/subscribe/post?u=2ce63840d1519c7566023afc4&amp;id=2955c9458d&amp;f_id=0031e4e3f0"
+        method="post"
+        novalidate
+      >
+        <input
+          type="email"
+          name="EMAIL"
+          placeholder="your@email.com"
+          required
+          aria-label="Email address"
+        />
+        <!-- Mailchimp anti-bot honeypot — do not remove -->
+        <div style="position:absolute;left:-5000px" aria-hidden="true">
+          <input type="text" name="mc-embedded-subscribe-form" tabindex="-1" value="" />
+        </div>
+        <button type="submit" id="bb-subscribe-btn">Subscribe</button>
+      </form>
+      <p class="bb-subscribe-note">Unsubscribe anytime.</p>
+    </div>
+
+    <!-- Thank-you message (shown after subscribe) -->
+    <div id="bb-subscribe-thanks" class="bb-subscribe-thanks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M8 12l3 3 5-5"/>
+      </svg>
+      <p>You're subscribed!</p>
+      <small>Thanks for joining — you'll hear from me when new content drops.</small>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('bb-subscribe-form');
+  var widget = document.getElementById('bb-subscribe-widget');
+  var thanks = document.getElementById('bb-subscribe-thanks');
+  var btn = document.getElementById('bb-subscribe-btn');
+
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var email = form.querySelector('input[type="email"]').value;
+    if (!email) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Subscribing…';
+
+    // Mailchimp JSONP: swap /post? → /post-json? and append callback param
+    var callbackName = 'bbMcCallback_' + Date.now();
+    var actionUrl = form.action
+      .replace('/post?', '/post-json?')
+      .replace('&amp;', '&');
+    var params = new URLSearchParams({ EMAIL: email, c: callbackName });
+    var src = actionUrl + '&' + params.toString();
+
+    window[callbackName] = function (data) {
+      // Clean up
+      delete window[callbackName];
+      var tag = document.getElementById(callbackName);
+      if (tag) tag.parentNode.removeChild(tag);
+
+      if (data && data.result === 'success') {
+        widget.style.display = 'none';
+        thanks.style.display = 'flex';
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+        var msg = (data && data.msg) ? data.msg : 'Something went wrong. Please try again.';
+        // Strip any Mailchimp HTML from error messages
+        msg = msg.replace(/<[^>]*>/g, '').split(' - ').pop().trim();
+        alert(msg);
+      }
+    };
+
+    var script = document.createElement('script');
+    script.id = callbackName;
+    script.src = src;
+    document.head.appendChild(script);
+
+    // Fallback timeout in case the script never loads
+    setTimeout(function () {
+      if (window[callbackName]) {
+        delete window[callbackName];
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
+      }
+    }, 8000);
+  });
+})();
+</script>
