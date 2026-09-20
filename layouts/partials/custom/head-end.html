@@ -1,0 +1,240 @@
+<style>
+/* ══════════════════════════════════════════════════════════════════════════
+   Boaz's Blog - Article Page Styles
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ───────────────────────────────────────────────────────── */
+:root {
+  --bb-primary: #ea580c;
+  --bb-primary-light: #f97316;
+  --bb-gradient: linear-gradient(135deg, #ea580c, #f97316);
+  --bb-text: #171717;
+  --bb-text-muted: #525252;
+  --bb-border: rgba(0, 0, 0, 0.08);
+  --bb-card-bg: #ffffff;
+}
+
+.dark {
+  --bb-text: #fafafa;
+  --bb-text-muted: #a3a3a3;
+  --bb-border: rgba(255, 255, 255, 0.1);
+  --bb-card-bg: #171717;
+}
+
+/* ── Article Content Styling ─────────────────────────────────────────────── */
+
+/* Headings with orange accent */
+.content h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: var(--bb-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.content h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(234, 88, 12, 0.2);
+  margin-top: 2.5rem;
+}
+
+.content h3 {
+  font-weight: 600;
+  color: var(--bb-primary);
+}
+
+/* Links */
+.content a:not(.bb-card-cta):not([class*="hextra"]) {
+  color: var(--bb-primary);
+  text-decoration: underline;
+  text-decoration-color: rgba(234, 88, 12, 0.3);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+
+.content a:not(.bb-card-cta):not([class*="hextra"]):hover {
+  text-decoration-color: var(--bb-primary);
+}
+
+/* Blockquotes */
+.content blockquote {
+  border-left: 4px solid var(--bb-primary);
+  background: linear-gradient(90deg, rgba(234, 88, 12, 0.05), transparent);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.dark .content blockquote {
+  background: linear-gradient(90deg, rgba(234, 88, 12, 0.1), transparent);
+}
+
+/* Code blocks */
+.content pre {
+  border-radius: 12px;
+  border: 1px solid var(--bb-border);
+}
+
+.content code:not(pre code) {
+  background: rgba(234, 88, 12, 0.08);
+  color: var(--bb-primary);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.dark .content code:not(pre code) {
+  background: rgba(234, 88, 12, 0.15);
+}
+
+/* Lists */
+.content ul > li::marker,
+.content ol > li::marker {
+  color: var(--bb-primary);
+}
+
+/* Tables */
+.content table {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--bb-border);
+}
+
+.content th {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.1), rgba(249, 115, 22, 0.05));
+}
+
+.dark .content th {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(249, 115, 22, 0.1));
+}
+
+/* Images */
+.content img {
+  border-radius: 12px;
+  border: 1px solid var(--bb-border);
+}
+
+/* ── Sidebar Styling ─────────────────────────────────────────────────────── */
+
+/* Active sidebar link */
+nav[class*="sidebar"] a[aria-current="true"],
+nav[class*="sidebar"] a[aria-current="page"] {
+  color: var(--bb-primary) !important;
+  font-weight: 600;
+}
+
+/* Sidebar hover */
+nav[class*="sidebar"] a:hover {
+  color: var(--bb-primary) !important;
+}
+
+/* ── Breadcrumb Styling ──────────────────────────────────────────────────── */
+nav[aria-label="Breadcrumb"] a:hover {
+  color: var(--bb-primary);
+}
+
+/* ── Pagination Styling ──────────────────────────────────────────────────── */
+.content + div a:hover,
+nav[class*="pager"] a:hover {
+  border-color: var(--bb-primary) !important;
+}
+
+/* ── Series Index Page Styling ───────────────────────────────────────────── */
+.bb-series-header {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.bb-series-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: var(--bb-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+.bb-series-desc {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--bb-text-muted);
+  max-width: 700px;
+  margin: 0 auto 2rem;
+}
+
+.bb-series-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff !important;
+  background: var(--bb-gradient);
+  border-radius: 10px;
+  text-decoration: none !important;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.25);
+}
+
+.bb-series-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.35);
+}
+
+/* ── Article Card in Sidebar ─────────────────────────────────────────────── */
+nav[class*="sidebar"] > ul > li > a {
+  transition: all 0.15s ease;
+}
+
+nav[class*="sidebar"] > ul > li > a:hover {
+  padding-left: 0.5rem;
+}
+
+/* ── Derivation Box Enhancement ──────────────────────────────────────────── */
+.bb-derive {
+  border: 1px solid var(--bb-border);
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  overflow: hidden;
+}
+
+.bb-derive summary {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.08), rgba(249, 115, 22, 0.04));
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--bb-primary);
+  transition: background 0.2s;
+}
+
+.dark .bb-derive summary {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.15), rgba(249, 115, 22, 0.08));
+}
+
+.bb-derive summary:hover {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.12), rgba(249, 115, 22, 0.06));
+}
+
+.dark .bb-derive summary:hover {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(249, 115, 22, 0.12));
+}
+
+.bb-derive > div {
+  padding: 1rem;
+  border-top: 1px solid var(--bb-border);
+}
+
+/* ── TOC Styling ─────────────────────────────────────────────────────────── */
+aside[class*="toc"] a:hover {
+  color: var(--bb-primary) !important;
+}
+
+aside[class*="toc"] a[class*="active"] {
+  color: var(--bb-primary) !important;
+}
+</style>

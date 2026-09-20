@@ -4,328 +4,209 @@ weight: 12
 math: true
 ---
 
-## Classical Linear Codes
+In this article, we will look at the CSS code, which is named after their co-discoverers Robert Calderbank, Peter Shor and Andrew Steane. The CSS code is a special type of stabiliser code. But before we dive into it, we first need to understand classical linear codes.
 
-Classical linear codes can be used to develop a wide variety of good quantum error-correcting codes. In particular, they form the foundation of **Calderbank-Shor-Steane (CSS) codes**, one of the most important families of quantum error-correcting codes.
 
-CSS codes, named after their independent discoverers A.R. Calderbank, Peter Shor, and Andrew Steane in 1996, provide a bridge between classical and quantum error correction. By combining two classical codes with the right relationship to each other, CSS codes achieve full quantum error correction while inheriting the well-understood properties of classical coding theory.
+### Classical Linear Codes
 
-Before diving into CSS codes, we must first understand classical linear codes and their key components: the generator matrix (for encoding) and the parity check matrix (for error detection and correction).
+A classical linear code is often referred to as [n, k], which means it encodes $k$ bits of information using $n$ bits. The elements of the encoding are called codewords, and there are $2^k$ codewords in total.
 
-A linear code $C$ encodes $k$ bits of information into $n$ bits using an $n \times k$ **generator matrix**, $G$. The entries of the generator matrix are either 0's or 1's, and all arithmetic is performed modulo 2.
+For example, consider a simple [3, 1] repetition code. Here, we encode 1 bit using 3 bits. The encoding is:
 
-$$
-y = Gx
-$$
+$$0 \mapsto 000$$
+$$1 \mapsto 111$$
 
-The only restriction on $G$ is that its columns be linearly independent.
+We have $k = 1$, so the number of codewords is $2^1 = 2$, which matches our two codewords: 000 and 111.
 
-A code using $n$ bits to encode $k$ bits of information is called an $[n,k]$ code.
+For a classical linear code, the distance is defined as the smallest Hamming distance between any two different codewords. The Hamming distance between codewords is the number of positions in which they differ. Why is the distance important? The distance tells us the maximum number of errors that the classical linear code can correct.
 
-Encoding is straightforward: multiply the $k$-bit message by the $n \times k$ generator matrix $G$ to obtain the $n$-bit encoded message.
+Every codeword is $d$ distance away from each other. Now, let's say the distance is $3$. If an error occurs on a codeword, the corrupted codeword is now distance 1 from the original codeword and distance 2 from the other codewords. We can still recover from this error since it has the lowest distance from the original codeword. If two errors occur on this codeword, it is now distance 2 from the original codeword and distance 1 from the other codeword. Now, we cannot recover the original codeword since it does not have the smallest distance with the corrupted codeword. As such, for a code with distance $d$, it can only correct $t$ errors; where $t = \lfloor(d - 1)/2\rfloor$.
 
-However, it is not immediately clear how to perform error-correction from this perspective. We need a different formalism: the **parity check matrix**. In this formulation, an $[n,k]$ code is defined to consist of all vectors $y$ such that
+A code [n, k] can also be referred to as [n, k, d].
 
-$$
-Hy = 0
-$$
+There are two matrices associated with a linear code that make encoding and error detection and correction possible: a generator matrix and a parity check matrix.
 
-where $H$ is an $(n-k) \times n$ matrix called the parity check matrix. Again, all entries are zeros and ones, and arithmetic is modulo 2.
+A generator matrix $G$ for an [n, k] linear code C is a $k \times n$ matrix:
 
-To connect the parity check picture with the generator matrix picture, we need a procedure to convert between $H$ and $G$.
+$$C = \{Gx : x \in \mathbb{Z}_2^k \}$$
 
-**From parity check matrix to generator matrix:**
+To encode a string, we simply multiply by $G$.
 
-The **kernel** (or null space) of $H$ is the set of all vectors $y$ such that $Hy = 0$. In other words, the kernel is exactly the set of valid codewords.
+A parity check matrix $H$ for an [n, k] linear code C is an $(n-k) \times n$ matrix such that:
 
-The **dimension** of the kernel is the number of linearly independent vectors needed to span it. Since $H$ is an $(n-k) \times n$ matrix with $n-k$ independent rows, its kernel has dimension $n - (n-k) = k$.
+$$ C = \{y \in \mathbb{Z}_2^n : Hy = 0\}$$
 
-To find $G$, we need to find $k$ linearly independent vectors that span this kernel. These vectors form the columns of $G$. 
+Here, $y$ is a codeword and $Hy$ gives the syndrome. How does the parity check matrix help in error detection and correction? Suppose we have a codeword $y \in C$ and errors occur on one of the bits. We can write the resulting string as $y^{\prime} = y + e$, where $e$ indicates where the errors took place (a 1 in each position where an error takes place, and 0 everywhere else). We see that $Hy^{\prime} = H(y + e) = He$. The syndrome is only dependent on the error. If the Hamming weight of $e$ is small enough, the syndrome $He$ will allow us to uniquely determine the error vector $e$. More specifically, there cannot be two distinct strings $e$ and $e^{\prime}$ both of Hamming weight less than $d/2$ such that $He^{\prime} = He$.
 
-**From generator matrix to parity check matrix:**
 
-The columns of $G$ span the code $C$. We need to find $n-k$ linearly independent vectors that are **orthogonal** to every column of $G$ (where orthogonality means the dot product is zero modulo 2). These orthogonal vectors form the rows of $H$.
+#### Example: The [7, 4] Hamming Code
 
-Equivalently, we need vectors $h$ such that $h \cdot g_i = 0$ for each column $g_i$ of $G$. This means $h^T G = 0$.
+Let's look at the [7, 4] Hamming code. This code encodes 4 bits of information using 7 bits, and has distance 3.
 
-**The fundamental relationship:**
-
-These two procedures are consistent because $HG = 0$. Every codeword $y = Gx$ satisfies $Hy = HGx = 0$, confirming that codewords pass the parity check.
-
-### Example: The [7,4,3] Hamming Code
-
-The Hamming code is an important example that will serve as the foundation for the Steane code. Its parity check matrix is:
+The generator matrix $G$ is:
 
 $$
-H = \begin{bmatrix} 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\\ 1 & 0 & 1 & 0 & 1 & 0 & 1 \end{bmatrix}
+G = \begin{pmatrix}
+1 & 0 & 0 & 0 & 1 & 1 & 0 \\\\
+0 & 1 & 0 & 0 & 1 & 0 & 1 \\\\
+0 & 0 & 1 & 0 & 0 & 1 & 1 \\\\
+0 & 0 & 0 & 1 & 1 & 1 & 1
+\end{pmatrix}
 $$
 
-Notice that the columns of $H$ are the binary representations of the numbers 1 through 7 (reading from bottom to top). This elegant structure makes syndrome decoding particularly simple.
-
-The corresponding generator matrix $G$ (whose columns span the kernel of $H$) is:
+The parity check matrix $H$ is:
 
 $$
-G = \begin{bmatrix} 1 & 0 & 0 & 0 \\\ 0 & 1 & 0 & 0 \\\ 0 & 0 & 1 & 0 \\\ 0 & 0 & 0 & 1 \\\ 0 & 1 & 1 & 1 \\\ 1 & 0 & 1 & 1 \\\ 1 & 1 & 0 & 1 \end{bmatrix}
+H = \begin{pmatrix}
+1 & 1 & 0 & 1 & 1 & 0 & 0 \\\\
+1 & 0 & 1 & 1 & 0 & 1 & 0 \\\\
+0 & 1 & 1 & 1 & 0 & 0 & 1
+\end{pmatrix}
 $$
 
-You can verify that $HG = 0$ (mod 2), confirming that every codeword generated by $G$ satisfies the parity check constraints.
+Let's encode the message $x = (1, 0, 1, 1)$. We compute $y = xG$:
 
-### Error Detection and Correction with the Parity Check Matrix
+$$y = (1, 0, 1, 1) \cdot G = (1, 0, 1, 1, 0, 1, 0)$$
 
-The parity check matrix makes error-detection and correction transparent. Suppose we encode the message $x$ as $y = Gx$, but an error $e$ due to noise corrupts $y$, giving the corrupted codeword $y' = y + e$. Because $Hy = 0$ for all codewords, it follows that:
-
-$$
-Hy' = H(y + e) = Hy + He = He
-$$
-
-We call $Hy'$ the **error syndrome**.
-
-The error syndrome contains information about the error that occurred, enabling recovery to the original codeword $y$. If no errors or just one error occurred, then the error syndrome $Hy'$ equals 0 in the no-error case, and equals $He_j$ when an error occurs on the $j$-th bit (where $e_j$ is the unit vector with a 1 in the $j$-th position). If we assume errors occur on at most one bit, error-correction proceeds by computing the error syndrome $Hy'$ and comparing it to the possible values of $He_j$ to determine which (if any) bit needs to be corrected.
-
-### Hamming Distance and Code Distance
-
-The **Hamming distance** $d(x, y)$ between two $n$-bit words $x$ and $y$ is the number of positions at which they differ. For example, $d((1,1,0,0), (0,1,0,1)) = 2$.
-
-The **Hamming weight** of a word $x$ is its distance from the all-zeros string: $\text{wt}(x) \equiv d(x, 0)$, i.e., the number of non-zero positions.
-
-The **distance of a code** $C$ is the minimum distance between any two distinct codewords:
+We can verify that $Hy = 0$:
 
 $$
-d(C) \equiv \min_{x,y \in C, x \neq y} d(x, y)
+H \cdot (1, 0, 1, 1, 0, 1, 0)^T = (0, 0, 0)^T
 $$
 
-Since $d(x, y) = \text{wt}(x + y)$ and the code is linear (meaning $x + y$ is a codeword whenever $x$ and $y$ are), we have:
+The syndrome is zero, confirming this is a valid codeword.
+
+Now suppose an error occurs on the third bit. The corrupted codeword becomes $y' = (1, 0, 0, 1, 0, 1, 0)$. The syndrome is:
 
 $$
-d(C) = \min_{x \in C, x \neq 0} \text{wt}(x)
+H \cdot (1, 0, 0, 1, 0, 1, 0)^T = (0, 1, 1)^T
 $$
 
-We say $C$ is an $[n, k, d]$ code, where $d$ is the code distance. A code with distance at least $2t + 1$ can correct errors on up to $t$ bits, by decoding the corrupted message $y'$ as the unique codeword $y$ satisfying $d(y, y') \leq t$.
-
-### Example: Error Correction with the Hamming Code
-
-Let's see how error correction works with the $[7,4,3]$ Hamming code, which can correct single-bit errors (since $d = 3 = 2(1) + 1$, we have $t = 1$).
-
-Suppose we want to encode the message $x = (1, 0, 1, 1)^T$. Using the generator matrix:
-
-$$
-y = Gx = \begin{bmatrix} 1 & 0 & 0 & 0 \\\ 0 & 1 & 0 & 0 \\\ 0 & 0 & 1 & 0 \\\ 0 & 0 & 0 & 1 \\\ 0 & 1 & 1 & 1 \\\ 1 & 0 & 1 & 1 \\\ 1 & 1 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 \\\ 0 \\\ 1 \\\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\\ 0 \\\ 1 \\\ 1 \\\ 0 \\\ 1 \\\ 0 \end{bmatrix}
-$$
-
-So the encoded codeword is $y = (1, 0, 1, 1, 0, 1, 0)$.
-
-Now suppose an error occurs on bit 5 (counting from 1), so $e = (0, 0, 0, 0, 1, 0, 0)^T$ and the corrupted codeword is:
-
-$$
-y' = y + e = (1, 0, 1, 1, 1, 1, 0)
-$$
-
-To detect and correct the error, we compute the syndrome:
-
-$$
-Hy' = \begin{bmatrix} 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\\ 1 & 0 & 1 & 0 & 1 & 0 & 1 \end{bmatrix} \begin{bmatrix} 1 \\\ 0 \\\ 1 \\\ 1 \\\ 1 \\\ 1 \\\ 0 \end{bmatrix} = \begin{bmatrix} 1 \\\ 0 \\\ 1 \end{bmatrix}
-$$
-
-The syndrome $(1, 0, 1)^T$ is the binary representation of 5 (reading from top to bottom as the most significant bit). This tells us the error occurred on bit 5. We correct by flipping that bit, recovering the original codeword $y$.
+This non-zero syndrome tells us an error has occurred. The syndrome $(0, 1, 1)^T$ corresponds to the third column of $H$, which uniquely identifies that the error occurred on the third bit. We can then flip this bit to recover the original codeword.
 
 
-### The Gilbert-Varshamov Bound
+#### Dual Codes
 
-An important question in coding theory is: how good can codes be? The **Gilbert-Varshamov bound** provides a partial answer. It states that for large $n$, there exists an $[n, k]$ error-correcting code protecting against errors on $t$ bits for some $k$ such that:
+We need to address one last concept before moving on to the CSS codes: the dual code. Suppose that we have an [n, k] linear code C. The dual code is denoted $C^{\perp}$, and contains all strings that have a dot product of 0 with all codewords of C:
 
-$$
-\frac{k}{n} \geq 1 - H\left(\frac{2t}{n}\right)
-$$
+$$C^{\perp} = \{y \in \mathbb{Z}_2^n : y \cdot x = 0 \text{ for all } x \in C\}$$
 
-where $H(x) \equiv -x \log(x) - (1-x)\log(1-x)$ is the binary Shannon entropy. The importance of this bound is that it guarantees the existence of good codes, provided one doesn't try to encode too many bits ($k$) into too small a number of bits ($n$).
+$C^{\perp}$ is an [n, n-k] linear code. If we have a generator matrix $G$ and a parity check matrix $H$ for a code C, then the generator matrix for $C^{\perp}$ is $H^T$ and the parity check matrix is $G^T$.
 
-### The Dual Code Construction
 
-In quantum error correction, we must handle two types of errors: bit flips and phase flips. It turns out that correcting phase flips requires a code that is "orthogonal" to the one used for bit flips. The dual code construction formalizes this orthogonality relationship, making it the natural tool for building quantum codes from classical ones.
 
-Suppose $C$ is an $[n, k]$ code with generator matrix $G$ and parity check matrix $H$. The **dual** of $C$, denoted $C^\perp$, is defined as the set of all vectors orthogonal to every codeword in $C$:
+## The CSS Code
+
+We can now introduce the CSS code. In order to define a CSS code, we must have two classical linear codes $C_1$ and $C_2$ that satisfy certain properties:
+
+1. $C_1$ must be an [n, $k_1$] linear code and $C_2$ must be an [n, $k_2$] linear code with $k_2 < k_1$.
+2. It must be that $C_2 \subseteq C_1$. That is, every codeword in $C_2$ must also be in $C_1$.
+3. If both $C_1$ and $C_2^{\perp}$ can correct up to $t$ errors, then the resulting CSS code will be an $[[n, k_1 - k_2]]$ code that can correct up to $t$ quantum errors.
+
+Given two classical codes $C_1$ and $C_2$, how do you actually write down the quantum codewords? We need to define the logical basis that gives the valid subspace within which the quantum codewords live. To do this we need to introduce the concept of a coset.
+
+A coset of $C_2$ is the set obtained by adding a fixed string $x$ to every element of $C_2$:
+
+$$ x + C_2 = \{x + y : y \in C_2\}$$
+
+We know that $C_2 \subseteq C_1$; as such we can separate the codewords of $C_1$ into disjoint cosets. Note that if $x_i + x_j \in C_2$, the cosets formed by $x_i$ and $x_j$ are the same. However, if $x_i + x_j \notin C_2$, the cosets formed by $x_i$ and $x_j$ are disjoint.
+
+The code $C_1$ has $2^{k_1}$ codewords and the code $C_2$ has $2^{k_2}$ codewords. Hence, the number of cosets is given as:
+
+$$\frac{2^{k_1}}{2^{k_2}} = 2^{k_1 - k_2}$$
+
+Each coset defines a logical basis state. Therefore the dimension of the CSS code is $2^{k_1 - k_2}$ and it encodes $k_1 - k_2$ qubits.
+
+The logical basis of the CSS code is given as:
 
 $$
-C^\perp = \\{y : y \cdot x = 0 \text{ for all } x \in C\\}
+|j\rangle \mapsto |x_j + C_2\rangle = \frac{1}{\sqrt{|C_2|}} \sum_{y \in C_2} |x_j + y\rangle
 $$
 
-The dual $C^\perp$ is an $[n, n-k]$ code. To see why, note that $C^\perp$ consists of vectors orthogonal to all $k$ basis vectors of $C$ (the columns of $G$), giving $k$ independent constraints on $n$ components, leaving $n-k$ degrees of freedom.
+Here notice that $\langle x_i + C_2 | x_j + C_2 \rangle = 0$ for $i \neq j$ follows from the fact that $x_i + x_j \notin C_2$ for $i \neq j$.
 
-**What are the generator and parity check matrices of $C^\perp$?**
-
-- **Generator matrix of $C^\perp$ is $H^T$**: The rows of $H$ are orthogonal to all codewords in $C$ (since $Hc = 0$ for all $c \in C$). Therefore, the rows of $H$ are codewords of $C^\perp$, and they form a basis. Taking these as columns gives $H^T$ as the generator matrix.
-
-- **Parity check matrix of $C^\perp$ is $G^T$**: A vector $y$ is in $C^\perp$ if and only if $y \cdot g_i = 0$ for each column $g_i$ of $G$. This condition is $G^T y = 0$, so $G^T$ serves as the parity check matrix.
-
-A code is **weakly self-dual** if $C \subseteq C^\perp$, and **strictly self-dual** if $C = C^\perp$.
-
-For CSS codes, we will need both $C$ and $C^\perp$ to have good error-correcting properties—one handles bit flips, the other handles phase flips.
-
----
-
-## CSS Codes
-
-### The Core Idea
-
-Quantum errors come in two fundamental types: **bit flips** ($X$ errors) and **phase flips** ($Z$ errors). A bit flip changes $|0\rangle \leftrightarrow |1\rangle$, while a phase flip changes $|+\rangle \leftrightarrow |-\rangle$ (or equivalently, adds a minus sign to $|1\rangle$).
-
-The key insight behind CSS codes is this: **we can handle each error type separately using classical codes**. We use one classical code $C_1$ to correct bit flips, and another code $C_2^\perp$ (the dual of $C_2$) to correct phase flips. The trick is choosing $C_1$ and $C_2$ so that these two correction procedures don't interfere with each other.
-
-We'll build up the construction step by step, using the **Steane code** as our running example throughout.
-
-### Step 1: Choose Two Classical Codes
-
-To construct a CSS code, we need two classical linear codes $C_1$ and $C_2$ satisfying:
-
-1. **Nesting condition**: $C_2 \subset C_1$ (every codeword of $C_2$ is also in $C_1$)
-2. **Error correction**: Both $C_1$ and $C_2^\perp$ can correct $t$ errors
-
-The resulting quantum code $\text{CSS}(C_1, C_2)$ will encode $k_1 - k_2$ logical qubits into $n$ physical qubits, where $C_1$ is an $[n, k_1]$ code and $C_2$ is an $[n, k_2]$ code.
-
-**For the Steane code**, we use the $[7, 4, 3]$ Hamming code $C$ with parity check matrix:
+A general logical state is encoded by linearity:
 
 $$
-H = \begin{bmatrix} 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\\ 1 & 0 & 1 & 0 & 1 & 0 & 1 \end{bmatrix}
+\sum_j \alpha_j|j \rangle \mapsto \sum_j \alpha_j|x_j + C_2 \rangle
 $$
 
-We set:
-- $C_1 = C$ (the Hamming code, a $[7, 4]$ code)
-- $C_2 = C^\perp$ (the dual of the Hamming code, a $[7, 3]$ code)
 
-**Why does $C_2 \subset C_1$?** We need to show that every codeword of $C^\perp$ is also a codeword of $C$.
+Now we have a way of defining the logical basis of the CSS code. The general steps to detect and fix errors in CSS codes are as follows:
 
-The dual code $C^\perp$ has generator matrix $H^T$. This means the codewords of $C^\perp$ are all linear combinations of the *columns* of $H^T$, which are the *rows* of $H$ written as column vectors.
+1. Compute $C_1$'s syndrome into ancilla qubits, measure it and apply NOT gates to fix the bit-flipped qubits.
+2. Apply a Hadamard to every qubit, which turns phase flips into bit flips.
+3. Compute $C_2^{\perp}$'s syndrome into ancilla qubits, measure it, and apply NOT gates to fix the flipped qubits.
+4. Apply a Hadamard to every qubit again to return to the original basis.
 
-For a vector $v$ to be a codeword of $C$, it must satisfy $Hv = 0$. So we need to check: does $H \cdot (\text{row}_i \text{ of } H)^T = 0$ for each row?
+How does this relate to the stabiliser codes?
 
-This is equivalent to asking whether $HH^T = 0$. Let's verify for the Hamming code:
+CSS codes are a special subclass of stabiliser codes. A stabiliser code is CSS when its stabiliser generators can be split into two groups: some made only of X's and some made only of Z's.
 
-$$
-HH^T = \begin{bmatrix} 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\\ 1 & 0 & 1 & 0 & 1 & 0 & 1 \end{bmatrix} \begin{bmatrix} 0 & 0 & 1 \\\ 0 & 1 & 0 \\\ 0 & 1 & 1 \\\ 1 & 0 & 0 \\\ 1 & 0 & 1 \\\ 1 & 1 & 0 \\\ 1 & 1 & 1 \end{bmatrix} = \begin{bmatrix} 0 & 0 & 0 \\\ 0 & 0 & 0 \\\ 0 & 0 & 0 \end{bmatrix} \pmod{2}
-$$
+The two groups come straight from the two classical codes. Each row of $C_1$'s parity check matrix gives a Z-type generator. For example, the row 0001111 becomes $I \otimes I \otimes I \otimes Z \otimes Z \otimes Z \otimes Z$. Measuring these detects bit-flips. Each row of $C_2^{\perp}$'s parity check matrix gives an X-type generator, which detects phase-flips.
 
-Since $HH^T = 0$, every row of $H$ (as a column vector) is in the kernel of $H$, meaning it's a codeword of $C$. Since the generators of $C^\perp$ are all in $C$, we have $C^\perp \subset C$.
 
-**Why can both codes correct errors?** The Hamming code $C_1 = C$ has distance 3, so it corrects 1 error. The dual $C_2^\perp = (C^\perp)^\perp = C$ also has distance 3. So both codes correct single-bit errors.
+#### Example: Constructing a CSS Code
 
-The Steane code is therefore a $[7, 4-3] = [7, 1]$ quantum code that can correct any single-qubit error.
+Let's construct a CSS code using simple classical codes. We will use the [7, 4] Hamming code as $C_1$ and a [7, 3] code as $C_2$.
 
-### Step 2: Construct the Codewords
+**Step 1: Define the classical codes**
 
-The logical basis states of a CSS code are **superpositions over cosets**. Here's how to construct them.
-
-**What is a coset?** Given a code $C_2$ and a vector $x$, the coset $x + C_2$ is the set of all vectors of the form $x + y$ where $y \in C_2$. If $C_2$ has $|C_2|$ codewords, then every coset also has $|C_2|$ elements.
-
-**The codeword construction**: For each coset of $C_2$ within $C_1$, we create a logical basis state as a uniform superposition:
+Let $C_1$ be the [7, 4] Hamming code with parity check matrix:
 
 $$
-|x + C_2\rangle = \frac{1}{\sqrt{|C_2|}} \sum_{y \in C_2} |x + y\rangle
+H_1 = \begin{pmatrix}
+1 & 1 & 0 & 1 & 1 & 0 & 0 \\\\
+1 & 0 & 1 & 1 & 0 & 1 & 0 \\\\
+0 & 1 & 1 & 1 & 0 & 0 & 1
+\end{pmatrix}
 $$
 
-Different cosets give orthogonal quantum states. Since $C_1$ contains $|C_1|/|C_2| = 2^{k_1 - k_2}$ cosets of $C_2$, we get $2^{k_1 - k_2}$ orthogonal basis states, encoding $k_1 - k_2$ logical qubits.
+Let $C_2$ be the [7, 3] code, which is a subcode of $C_1$. For simplicity, we take $C_2 = C_1^{\perp}$, the dual of the Hamming code. This is a [7, 3] code with generator matrix $H_1$.
 
-**For the Steane code**: The code $C_2 = C^\perp$ has 8 codewords:
+We can verify that $C_2 \subseteq C_1$: since $C_2 = C_1^{\perp}$, every codeword in $C_2$ is orthogonal to itself, meaning $C_2 \subseteq C_2^{\perp} = C_1$.
 
-$$
-C_2 = \\{0000000, 0001111, 0110011, 0111100, 1010101, 1011010, 1100110, 1101001\\}
-$$
+**Step 2: Determine the CSS code parameters**
 
-Since $C_1$ has 16 codewords and $C_2$ has 8, there are exactly 2 cosets, giving us 1 logical qubit.
+The CSS code encodes $k_1 - k_2 = 4 - 3 = 1$ qubit. This is the famous [[7, 1, 3]] Steane code.
 
-**Logical $|0_L\rangle$**: The coset containing $0000000$ is just $C_2$ itself:
+**Step 3: Construct the logical basis**
 
-$$
-|0_L\rangle = \frac{1}{\sqrt{8}} \Big[ |0000000\rangle + |0001111\rangle + |0110011\rangle + |0111100\rangle + |1010101\rangle + |1011010\rangle + |1100110\rangle + |1101001\rangle \Big]
-$$
-
-**Logical $|1_L\rangle$**: We need a codeword in $C_1$ but not in $C_2$. The all-ones vector $1111111$ works (verify: $H \cdot 1111111^T = 0$, so it's in $C_1$, but it's not in the list above). The coset $1111111 + C_2$ gives:
+We have $2^{k_1 - k_2} = 2^1 = 2$ cosets. The logical basis states are:
 
 $$
-|1_L\rangle = \frac{1}{\sqrt{8}} \Big[ |1111111\rangle + |1110000\rangle + |1001100\rangle + |1000011\rangle + |0101010\rangle + |0100101\rangle + |0011001\rangle + |0010110\rangle \Big]
+|\bar{0}\rangle = \frac{1}{\sqrt{8}} \sum_{y \in C_2} |y\rangle
 $$
 
-### Step 3: Correcting Bit Flip Errors
-
-Now suppose a bit flip error occurs. The error flips some qubits, changing the computational basis states. How do we detect and correct it?
-
-**The key observation**: Every term in our superposition $|x + C_2\rangle$ is a codeword of $C_1$ (since $C_2 \subset C_1$). If a bit flip error $e$ occurs, changing $|x + y\rangle$ to $|x + y + e\rangle$, we can use $C_1$'s parity check matrix to detect it.
-
-**Detection procedure**:
-1. Prepare an ancilla register in state $|0\rangle$
-2. Compute the syndrome: for each term $|x + y + e\rangle$, compute $H_1(x + y + e) = H_1 e$ (since $x + y \in C_1$)
-3. Measure the ancilla to get the syndrome $H_1 e$
-
-**Why does this work?** Because $x + y$ is always a valid codeword of $C_1$, the syndrome only depends on the error $e$, not on which term of the superposition we're in. This means the measurement doesn't collapse the superposition—it only reveals information about the error.
-
-**Correction**: From the syndrome $H_1 e$, we determine which bits were flipped (just like classical error correction) and apply $X$ gates to fix them.
-
-**Example**: Suppose a bit flip occurs on qubit 3 of $|0_L\rangle$, so $e = (0,0,1,0,0,0,0)$.
-
-The syndrome is:
 $$
-He = \begin{bmatrix} 0 & 0 & 0 & 1 & 1 & 1 & 1 \\\ 0 & 1 & 1 & 0 & 0 & 1 & 1 \\\ 1 & 0 & 1 & 0 & 1 & 0 & 1 \end{bmatrix} \begin{bmatrix} 0 \\\ 0 \\\ 1 \\\ 0 \\\ 0 \\\ 0 \\\ 0 \end{bmatrix} = \begin{bmatrix} 0 \\\ 1 \\\ 1 \end{bmatrix}
+|\bar{1}\rangle = \frac{1}{\sqrt{8}} \sum_{y \in C_2} |x_1 + y\rangle
 $$
 
-The syndrome $(0,1,1)^T$ is the binary representation of 3, telling us qubit 3 has the error. Apply $X_3$ to correct.
-
-### Step 4: Correcting Phase Flip Errors
-
-Phase errors are trickier because they don't change the computational basis states—they only affect the phases in a superposition. A phase flip $Z$ on qubit $j$ multiplies $|1\rangle$ by $-1$ on that qubit.
-
-**The Hadamard trick**: The Hadamard gate swaps the roles of bit flips and phase flips:
-- $HXH = Z$ (bit flip becomes phase flip)
-- $HZH = X$ (phase flip becomes bit flip)
-
-So if we apply Hadamard gates to all qubits, phase errors become bit errors that we can detect using classical syndrome measurement.
-
-**What happens to the codewords under Hadamard?** This is where the dual code enters. When we apply $H^{\otimes n}$ to a CSS codeword, the superposition over $C_2$ transforms into a superposition over $C_2^\perp$ (the dual code). The math involves Fourier analysis over $\mathbb{Z}_2^n$, but the key result is:
+where $x_1$ is a codeword in $C_1$ but not in $C_2$. For the Steane code, we can write these explicitly:
 
 $$
-H^{\otimes n} |x + C_2\rangle \propto \sum_{z \in C_2^\perp} (-1)^{x \cdot z} |z\rangle
+|\bar{0}\rangle = \frac{1}{\sqrt{8}} (|0000000\rangle + |1010101\rangle + |0110011\rangle + |1100110\rangle + |0001111\rangle + |1011010\rangle + |0111100\rangle + |1101001\rangle)
 $$
 
-**Detection procedure for phase errors**:
-1. Apply Hadamard gates to all qubits (this converts phase errors to bit errors)
-2. Measure the syndrome using the parity check matrix $H_2$ of $C_2^\perp$
-3. Apply Hadamard gates again to return to the original basis
-
-**For the Steane code**: Since $C_2 = C^\perp$, we have $C_2^\perp = C$. So the same parity check matrix $H$ works for both bit flip and phase flip detection.
-
-**Example**: Suppose a phase flip $Z_5$ occurs on qubit 5. After applying Hadamards, this becomes a bit flip on qubit 5. The syndrome calculation is identical to the bit flip case:
-
 $$
-He_5 = H \cdot (0,0,0,0,1,0,0)^T = (1,0,1)^T
+|\bar{1}\rangle = \frac{1}{\sqrt{8}} (|1111111\rangle + |0101010\rangle + |1001100\rangle + |0011001\rangle + |1110000\rangle + |0100101\rangle + |1000011\rangle + |0010110\rangle)
 $$
 
-This is the binary representation of 5, identifying the error location. We correct with $X_5$ (which becomes $Z_5$ after the final Hadamard layer).
+**Step 4: Derive the stabiliser generators**
 
-### Summary: The Complete CSS Error Correction Procedure
+From the parity check matrix $H_1$ of $C_1$, we get the Z-type stabiliser generators:
 
-Given a CSS code $\text{CSS}(C_1, C_2)$ with:
-- $H_1$ = parity check matrix of $C_1$ (for bit flips)
-- $H_2$ = parity check matrix of $C_2^\perp$ (for phase flips)
+- Row 1: $1101100 \rightarrow Z \otimes Z \otimes I \otimes Z \otimes Z \otimes I \otimes I$
+- Row 2: $1011010 \rightarrow Z \otimes I \otimes Z \otimes Z \otimes I \otimes Z \otimes I$
+- Row 3: $0111001 \rightarrow I \otimes Z \otimes Z \otimes Z \otimes I \otimes I \otimes Z$
 
-**Bit flip correction**:
-1. Measure syndrome $s_1 = H_1 e_1$
-2. Decode to find error locations
-3. Apply $X$ gates to correct
+From the parity check matrix of $C_2^{\perp} = C_1$, we get the X-type stabiliser generators:
 
-**Phase flip correction**:
-1. Apply $H^{\otimes n}$ to all qubits
-2. Measure syndrome $s_2 = H_2 e_2$
-3. Decode to find error locations
-4. Apply $X$ gates to correct (these become $Z$ gates after step 5)
-5. Apply $H^{\otimes n}$ to return to original basis
+- Row 1: $1101100 \rightarrow X \otimes X \otimes I \otimes X \otimes X \otimes I \otimes I$
+- Row 2: $1011010 \rightarrow X \otimes I \otimes X \otimes X \otimes I \otimes X \otimes I$
+- Row 3: $0111001 \rightarrow I \otimes X \otimes X \otimes X \otimes I \otimes I \otimes X$
 
-**For the Steane code**: Both syndromes use the same matrix $H$, and the code corrects any single-qubit error (bit flip, phase flip, or both).
+We can verify that all these generators commute with each other. The X-type and Z-type generators commute because any X generator and Z generator share an even number of positions where both have non-identity operators (a property guaranteed by $C_2 \subseteq C_1$).
 
-### Why the Nesting Condition $C_2 \subset C_1$ Matters
-
-The requirement $C_2 \subset C_1$ ensures two things:
-
-1. **Well-defined codewords**: Different cosets of $C_2$ within $C_1$ give distinct, orthogonal quantum states. If $C_2 \not\subset C_1$, some cosets would overlap with elements outside $C_1$, breaking the construction.
-
-2. **Non-interfering error correction**: When we measure the bit flip syndrome, every term in our superposition gives the same syndrome (because all terms differ only by elements of $C_2$, which are all in $C_1$). This means the measurement reveals only error information, not logical information.
-
-The CSS construction is elegant because it reduces quantum error correction to two independent classical problems, one for each error type.
+This is the Steane code, one of the most important CSS codes in quantum error correction.
 

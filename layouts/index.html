@@ -1,137 +1,325 @@
 {{ define "main" }}
 <style>
-  /* ── Page container ───────────────────────────────── */
-  .bb-page {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 3.5rem 1.5rem 5rem;
+/* ══════════════════════════════════════════════════════════════════════════
+   Boaz's Blog - Custom Card-Based Design
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── CSS Variables ───────────────────────────────────────────────────────── */
+:root {
+  --bb-primary: #ea580c;
+  --bb-primary-hover: #f97316;
+  --bb-gradient: linear-gradient(135deg, #ea580c, #f97316);
+  --bb-bg: #fafafa;
+  --bb-card-bg: #ffffff;
+  --bb-border: rgba(0, 0, 0, 0.08);
+  --bb-text: #171717;
+  --bb-text-muted: #525252;
+  --bb-hero-gradient: linear-gradient(135deg, rgba(234, 88, 12, 0.08) 0%, transparent 50%);
+}
+
+.dark {
+  --bb-bg: #0a0a0a;
+  --bb-card-bg: #171717;
+  --bb-border: rgba(255, 255, 255, 0.08);
+  --bb-text: #fafafa;
+  --bb-text-muted: #a3a3a3;
+  --bb-hero-gradient: linear-gradient(135deg, rgba(234, 88, 12, 0.12) 0%, transparent 50%);
+}
+
+/* ── Hero Section ────────────────────────────────────────────────────────── */
+.bb-hero {
+  position: relative;
+  padding: 4rem 1.5rem 3rem;
+  background: var(--bb-hero-gradient);
+  border-bottom: 1px solid var(--bb-border);
+}
+
+.bb-hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.bb-hero h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+  background: var(--bb-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@media (min-width: 768px) {
+  .bb-hero {
+    padding: 5rem 2rem 4rem;
   }
 
-  /* ── Author bio ───────────────────────────────────── */
-  .bb-bio {
-    margin-bottom: 2.5rem;
+  .bb-hero h1 {
+    font-size: 3.5rem;
   }
+}
 
-  .bb-bio h1 {
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem;
-    letter-spacing: -0.02em;
-    color: #ea580c;
-  }
+.bb-hero-desc {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--bb-text-muted);
+  max-width: 680px;
+  margin: 0 0 1.5rem;
+}
 
-  .bb-bio p {
-    font-size: 0.92rem;
-    line-height: 1.65;
-    margin: 0 0 0.9rem;
-    opacity: 0.7;
-  }
+/* ── Social Links ────────────────────────────────────────────────────────── */
+.bb-social {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
 
-  .bb-social {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
+.bb-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--bb-text-muted);
+  background: var(--bb-card-bg);
+  border: 1px solid var(--bb-border);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
 
-  .bb-social a {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.82rem;
-    opacity: 0.5;
-    text-decoration: none;
-    transition: opacity 0.15s;
-    font-weight: 500;
-  }
+.bb-social a:hover {
+  color: var(--bb-primary);
+  border-color: var(--bb-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
+  text-decoration: none;
+}
 
-  .bb-social a:hover {
-    opacity: 1;
-    color: #ea580c;
-    text-decoration: none;
-  }
+.bb-social svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex-shrink: 0;
+}
 
-  .bb-social svg {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-    fill: currentColor;
-  }
+/* ── Main Container ──────────────────────────────────────────────────────── */
+.bb-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
 
-  /* ── Divider ──────────────────────────────────────── */
-  .bb-divider {
-    border: none;
-    border-top: 2px solid rgba(234,88,12,0.25);
-    margin: 0 0 2rem;
+@media (min-width: 768px) {
+  .bb-container {
+    padding: 4rem 2rem 6rem;
   }
+}
 
-  .dark .bb-divider {
-    border-color: rgba(234,88,12,0.35);
-  }
+/* ── Section Title ───────────────────────────────────────────────────────── */
+.bb-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 2rem;
+  color: var(--bb-text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
 
-  /* ── Post list ────────────────────────────────────── */
-  .bb-post-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+.bb-section-title::before {
+  content: "";
+  display: inline-block;
+  width: 4px;
+  height: 1.5rem;
+  background: var(--bb-gradient);
+  border-radius: 2px;
+}
 
-  .bb-post-item {
-    padding: 1.4rem 0;
-    border-bottom: 1px solid rgba(0,0,0,0.06);
-  }
+/* ── Card Grid ───────────────────────────────────────────────────────────── */
+.bb-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
 
-  .dark .bb-post-item {
-    border-color: rgba(255,255,255,0.06);
+@media (max-width: 400px) {
+  .bb-card-grid {
+    grid-template-columns: 1fr;
   }
+}
 
-  .bb-post-item:last-child {
-    border-bottom: none;
-  }
+/* ── Card Component ──────────────────────────────────────────────────────── */
+.bb-card {
+  position: relative;
+  background: var(--bb-card-bg);
+  border: 1px solid var(--bb-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
 
-  .bb-post-meta {
-    font-size: 0.78rem;
-    color: #ea580c;
-    opacity: 0.75;
-    margin: 0 0 0.4rem;
-    font-weight: 500;
-    letter-spacing: 0.02em;
-  }
+.bb-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--bb-gradient);
+  border-radius: 12px 12px 0 0;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
 
-  .bb-post-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin: 0 0 0.45rem;
-    letter-spacing: -0.01em;
-  }
+.bb-card:hover {
+  border-color: rgba(234, 88, 12, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
 
-  .bb-post-title a {
-    text-decoration: none;
-    color: inherit;
-    transition: opacity 0.15s;
-  }
+.dark .bb-card:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
 
-  .bb-post-title a:hover {
-    color: #ea580c;
-    opacity: 1;
-    text-decoration: none;
-  }
+.bb-card:hover::before {
+  opacity: 1;
+}
 
-  .bb-post-desc {
-    font-size: 0.88rem;
-    line-height: 1.65;
-    opacity: 0.62;
-    margin: 0;
-  }
+/* ── Card Icon ───────────────────────────────────────────────────────────── */
+.bb-card-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.1), rgba(249, 115, 22, 0.05));
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.dark .bb-card-icon {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.2), rgba(249, 115, 22, 0.1));
+}
+
+/* ── Card Content ────────────────────────────────────────────────────────── */
+.bb-card h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+  color: var(--bb-text);
+}
+
+.bb-card p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--bb-text-muted);
+  margin: 0 0 1rem;
+  flex-grow: 1;
+}
+
+/* ── Card Meta ───────────────────────────────────────────────────────────── */
+.bb-card-meta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--bb-primary);
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bb-card-meta svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* ── Card CTA Button ─────────────────────────────────────────────────────── */
+.bb-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--bb-gradient);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.bb-card-cta:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.3);
+  text-decoration: none;
+  color: #fff;
+}
+
+.bb-card-cta svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.bb-card-cta:hover svg {
+  transform: translateX(2px);
+}
+
+/* ── Coming Soon Card ────────────────────────────────────────────────────── */
+.bb-card--soon {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.bb-card--soon:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--bb-border);
+}
+
+.bb-card--soon::before {
+  display: none;
+}
+
+.bb-card--soon .bb-card-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--bb-text-muted);
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 999px;
+  margin-bottom: 1rem;
+}
+
+.dark .bb-card--soon .bb-card-badge {
+  background: rgba(255, 255, 255, 0.1);
+}
 </style>
 
-<div class="bb-page">
-
-  <!-- ── Author bio ── -->
-  <div class="bb-bio">
+<!-- ══════════════════════════════════════════════════════════════════════════
+     Hero Section
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="bb-hero">
+  <div class="bb-hero-content">
     <h1>Welcome to Boaz's Blog</h1>
-    <p> This blog is where I explore ideas in quantum computing, machine learning, and physics that I find interesting. Rather than skimming the surface, I like to dig into the mathematical details, working through each derivation step by step so the reasoning is transparent. I hope you enjoy the blogs!</p>
+    <p class="bb-hero-desc">
+      This blog is where I explore ideas in quantum computing, machine learning, and physics that I find interesting. Rather than skimming the surface, I like to dig into the mathematical details, working through each derivation step by step so the reasoning is transparent.
+    </p>
     <div class="bb-social">
-
       <!-- GitHub -->
       <a href="https://github.com/Boaz-ato" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -139,7 +327,6 @@
         </svg>
         GitHub
       </a>
-
       <!-- LinkedIn -->
       <a href="https://www.linkedin.com/in/boaz-ato-micah/" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -147,7 +334,6 @@
         </svg>
         LinkedIn
       </a>
-
       <!-- Email -->
       <a href="mailto:boazmicah2@gmail.com">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -155,23 +341,58 @@
         </svg>
         Email
       </a>
-
     </div>
   </div>
-
-  <hr class="bb-divider" />
-
-  <!-- ── Post list ── -->
-  <ul class="bb-post-list">
-
-    <li class="bb-post-item">
-      <h2 class="bb-post-title">
-        <a href="/Boaz-Blogs/error-correction/">Quantum Error Correction</a>
-      </h2>
-      <p class="bb-post-desc">This series explains quantum error correction starting from the basics through to current research, discussing the surface code and qLDPC codes. I will also discuss how we can assess the performance of quantum codes using STIM. Anyone with a basic understanding of quantum computing and linear algebra can follow along.</p>
-    </li>
-
-  </ul>
-
 </div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     Featured Series
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="bb-container">
+  <h2 class="bb-section-title">Featured Series</h2>
+
+  <div class="bb-card-grid">
+
+    <!-- Quantum Error Correction Series -->
+    <article class="bb-card">
+      <div class="bb-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--bb-primary);">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          <path d="M2 12h20"/>
+        </svg>
+      </div>
+      <h3>Quantum Error Correction</h3>
+      <p>A comprehensive journey from the fundamentals of quantum error correction through to current research. Covers the surface code, qLDPC codes, and performance analysis using STIM. Accessible to anyone with basic quantum computing and linear algebra knowledge.</p>
+      <div class="bb-card-meta">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+        </svg>
+        17 articles
+      </div>
+      <a href="/Boaz-Blogs/error-correction/" class="bb-card-cta">
+        Start Reading
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+        </svg>
+      </a>
+    </article>
+
+    <!-- Coming Soon Placeholder -->
+    <article class="bb-card bb-card--soon">
+      <span class="bb-card-badge">Coming Soon</span>
+      <div class="bb-card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 24px; height: 24px; color: var(--bb-text-muted);">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h3>More Series</h3>
+      <p>Additional series exploring machine learning, physics, and other fascinating topics are in the works. Stay tuned for more in-depth explorations.</p>
+    </article>
+
+  </div>
+</div>
+
 {{ end }}
