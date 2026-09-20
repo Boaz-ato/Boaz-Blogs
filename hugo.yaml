@@ -42,7 +42,7 @@ params:
     enable: true
     type: flexsearch
   footer:
-    displayCopyright: true
+    displayCopyright: false
     displayPoweredBy: false
   editURL:
     enable: false

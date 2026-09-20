@@ -1,5 +1,5 @@
 ---
-title: "Quantum Error Correction"
+title: " "
 linkTitle: "Quantum Error Correction"
 cascade:
   type: docs
