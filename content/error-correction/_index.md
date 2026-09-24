@@ -11,7 +11,7 @@ cascade:
 # Introduction to Quantum Error Correction
 
 <p class="bb-series-desc">
-A series on quantum error correction. I'll explain why quantum error correction is essential for building a useful quantum computer, why QEC is hard, and the approaches used to overcome those challenges. I will also explain different stabilizer codes such as bit-flip repetition code, phase-flip repetition code, Shor's code, Steane Code and simulate them using STIM. The goal is to build understanding from the basics up so that by the end you have the knowledge needed to follow current research in the field.
+In this series, I will explain why quantum error correction (QEC) is essential for building a useful quantum computer, why QEC is hard, and the approaches used to overcome those challenges. I will also explain different quantum error correction protocols such as the bit-flip repetition code, phase-flip repetition code, Shor's code, and the Steane Code. We would also simulate these codes and test how they perform under different noise profiles. The goal is to build understanding so that by the end you have the knowledge needed to follow current research in the field.
 </p>
 
 <a href="introduction" class="bb-series-cta">

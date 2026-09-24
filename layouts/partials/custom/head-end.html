@@ -24,13 +24,12 @@
 /* ── Article Content Styling ─────────────────────────────────────────────── */
 
 /* Headings with orange accent */
+article.content h1,
 .content h1 {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  background: var(--bb-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-weight: 800 !important;
+  letter-spacing: -0.03em !important;
+  color: #ea580c !important;
+  -webkit-text-fill-color: #ea580c !important;
 }
 
 .content h2 {
@@ -48,11 +47,11 @@
 
 /* Links */
 .content a:not(.bb-card-cta):not([class*="hextra"]) {
-  color: var(--bb-primary);
-  text-decoration: underline;
-  text-decoration-color: rgba(234, 88, 12, 0.3);
-  text-underline-offset: 2px;
-  transition: text-decoration-color 0.2s;
+  color: var(--bb-primary) !important;
+  text-decoration: underline !important;
+  text-decoration-color: rgba(234, 88, 12, 0.3) !important;
+  text-underline-offset: 2px !important;
+  transition: text-decoration-color 0.2s !important;
 }
 
 .content a:not(.bb-card-cta):not([class*="hextra"]):hover {
@@ -80,7 +79,6 @@
 
 .content code:not(pre code) {
   background: rgba(234, 88, 12, 0.08);
-  color: var(--bb-primary);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
   font-size: 0.9em;
