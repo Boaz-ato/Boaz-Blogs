@@ -18,7 +18,7 @@ In quantum information, redundancy is achieved by expanding the Hilbert space. W
 
 To make this concrete, let's consider adding redundancy to a single qubit using three physical qubits. The circuit used to add redundancy is given below.
 
-![Circuit used to add redundancy to a qubit](/images/encoding.png)
+![Circuit used to add redundancy to a qubit](/images/redundancy.jpg)
 
 The circuit uses two CNOT gates, with the original qubit as the control and the two extra qubits, initialised to $|0\rangle$, as targets. It takes the state $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$ and produces:
 
@@ -28,11 +28,11 @@ where $|000\rangle$ and $|111\rangle$ are the **logical codewords**. This is not
 
 $$|\psi\rangle \otimes |\psi\rangle \otimes |\psi\rangle = \bigl(\alpha|0\rangle + \beta|1\rangle\bigr)^{\otimes 3}$$
 
-which expands into eight terms with all combinations of $\alpha$ and $\beta$. The encoded state $\alpha|000\rangle + \beta|111\rangle$ has only two terms — the logical information is spread across the qubits through entanglement, not copying.
+which expands into eight terms with all combinations of $\alpha$ and $\beta$. The encoded state $\alpha|000\rangle + \beta|111\rangle$ has only two terms, and it is referred to as the logical qubit.
 
 ## The Codespace
 
-The encoding operation gives us a geometric picture of how redundancy enables error detection. Before encoding, the single qubit lives in a two-dimensional Hilbert space:
+The encoding operation gives us a geometric picture of how entanglement enables error detection. Before encoding, the single qubit lives in a two-dimensional Hilbert space:
 
 $$|\psi\rangle \in \mathcal{H}_2 = \text{span}\{|0\rangle,\, |1\rangle\}$$
 
@@ -52,8 +52,10 @@ This state is no longer in the codespace $\mathcal{C}$. It has been rotated into
 
 $$X_1|\psi\rangle_L \in \mathcal{F} = \text{span}\{|100\rangle,\, |011\rangle\} \subset \mathcal{H}_8$$
 
-We call $\mathcal{F}$ the **error subspace**. Crucially, $\mathcal{C}$ and $\mathcal{F}$ are mutually orthogonal — they share no overlap. An uncorrupted logical state lives in $\mathcal{C}$; a state that has suffered a bit-flip on the first qubit lives in $\mathcal{F}$. Because the two subspaces are orthogonal, we can perform a projective measurement that determines which subspace the state occupies, without learning anything about the values of $\alpha$ and $\beta$.
+We call $\mathcal{F}$ the **error subspace**. Crucially, $\mathcal{C}$ and $\mathcal{F}$ are mutually orthogonal — they share no overlap. An uncorrupted logical state lives in $\mathcal{C}$; a state that has suffered a bit-flip on the first qubit lives in $\mathcal{F}$. Because the two subspaces are orthogonal, we can perform determine which subspace the state occupies, without learning anything about the values of $\alpha$ and $\beta$.
 
 Think of the quantum state as a vector living in an eight-dimensional space, spanned by the eight computational basis states $\{|000\rangle, |001\rangle, |010\rangle, |011\rangle, |100\rangle, |101\rangle, |110\rangle, |111\rangle\}$. When no error has occurred, the state lives entirely within the codespace, with components only along the $|000\rangle$ and $|111\rangle$ axes. When an error occurs, the state is rotated out of the codespace, and which error subspace it lands in tells us exactly what error occurred.
 
-The key insight is that this measurement never reveals the values of $\alpha$ and $\beta$. It only tells us which error subspace the state has been rotated into. The actual quantum information remains untouched throughout — we can detect and identify the error without ever disturbing the logical information itself.
+The key insight is that we can simply determine which subspace the state lives in. We do not gain any information about the values of $\alpha$ and $\beta$. The actual quantum information remains untouched throughout — we can detect and identify the error without ever disturbing the logical information itself. 
+
+In the next article, we will begin exploring how we can detect which subspace the state lives in! 

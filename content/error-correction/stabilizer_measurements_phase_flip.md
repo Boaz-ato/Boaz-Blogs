@@ -1,5 +1,5 @@
 ---
-title: "Stabilizer Measurements:  Detecting Phase Errors"
+title: "Detecting Phase Errors"
 weight: 7
 math: true
 ---

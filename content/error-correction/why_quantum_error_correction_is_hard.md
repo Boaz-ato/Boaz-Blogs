@@ -45,7 +45,7 @@ Since every point on the surface of the sphere represents a different quantum st
 - **Combined errors (Y errors):** a simultaneous bit flip and phase flip.
 - **Rotation errors:** small, partial rotations that leave the qubit somewhere between its intended state and a flipped one.
 
-With infinitely many possible error types, it seems like correcting all of them would require an infinitely complex procedure.
+With infinitely many possible error types, it seems like correcting all of them would require a complex procedure.
 
 ### 3. Measurement Destroys Quantum Information
 
@@ -53,7 +53,7 @@ In classical error correction, error detection is straightforward: read the bits
 
 In quantum mechanics, measurement is destructive. When you measure a qubit, you collapse its superposition to a definite outcome, and the quantum information encoded in the amplitudes $\alpha$ and $\beta$ is irreversibly lost. This means we cannot simply read out the physical qubits to check for errors the way we do classically — any attempt to look at the encoded information directly would destroy it.
 
-This forces quantum error correction to take a fundamentally different approach: we must diagnose errors **indirectly**, through carefully chosen measurements that reveal what went wrong without ever revealing the logical qubit's state. These special measurements are called **syndrome measurements**, and designing them correctly is at the heart of every quantum error correcting code.
+This forces quantum error correction to take a fundamentally different approach: we must diagnose errors **indirectly**, through carefully chosen measurements that reveal what went wrong without ever revealing the qubit's state. These special measurements are called **syndrome measurements**, and designing them correctly is at the heart of every quantum error correcting code.
 
 ---
 

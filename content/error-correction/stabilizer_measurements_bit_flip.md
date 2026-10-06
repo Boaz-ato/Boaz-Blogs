@@ -1,5 +1,5 @@
 ---
-title: "Stabilizer Measurements: Detecting Bit-Flip Errors"
+title: "Detecting Bit-Flip Errors"
 weight: 6
 math: true
 ---
